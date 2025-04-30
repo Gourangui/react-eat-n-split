@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const initialFriends = [
   {
     id: 118836,
@@ -20,20 +22,21 @@ const initialFriends = [
 ];
 
 export default function App() {
+  const friends = initialFriends;
+
   return (
     <div className="app">
       <div className="sidebar">
-        <FriendList />
+        <FriendList friends={friends} />
         <FormAddFriend />
         <Button>Add friend</Button>
       </div>
+      <FormSplitBill friends={friends} />
     </div>
   )
 }
 
-function FriendList() {
-  const friends = initialFriends;
-
+function FriendList({friends}) {
   return(
     <ul>
       {friends.map((friend) => (
@@ -63,14 +66,18 @@ function Friend({friend}) {
   )
 }
 
-function FormAddFriend(){
+function FormAddFriend({onClickAddFriend}){
+  /* const [friend, setFriend] = useState({
+    name: "",
+    image: "",
+  }); */
   return (
     <form className="form-add-friend">
       <label htmlFor="name">Friend Name</label>
       <input type="text" id="name" placeholder="Enter name..." required />
       <label htmlFor="image">Image URL</label>
       <input type="text" id="image" placeholder="Enter image URL..." required />
-      <Button>Add</Button>
+      <Button onClick={onClickAddFriend()}>Add</Button>
     </form>
   )
 }
@@ -78,5 +85,32 @@ function FormAddFriend(){
 function Button({children}) {
   return (
     <button className="button">{children}</button>
+  )
+}
+
+function FormSplitBill(){
+  const [bill, setBill] = useState("");
+
+  return (
+    <form className="form-split-bill">
+      <h2>Split a bill with a friend</h2>
+      <label htmlFor="bill">Bill Amount</label>
+      <input type="text" id="bill" placeholder="Enter bill amount..." required />
+
+      <label htmlFor="bill">Your expense</label>
+      <input type="text" id="your-expense" placeholder="Enter your expense..." required />
+
+      <label htmlFor="friend">Select a friend</label>
+      <select id="friend" required>
+        <option value="">Select a friend</option>
+        {initialFriends.map((friend) => (
+          <option key={friend.id} value={friend.id}>{friend.name}</option>
+        ))}
+      </select>
+      
+      <label htmlFor="bill">Friend expense</label>
+      <input type="text" id="friend-expense" placeholder={0} value={0} required disabled/>
+      <Button>Split Bill</Button>
+    </form>
   )
 }
